@@ -23,15 +23,15 @@ function App(props) {
 
     const debouncedChangeHandler = ()=>{
       const value= inputRef.current.value;
-      debounce(requestFunc(value), 500)
+      debounce(requestFunc(value), 1000)
     };
     
   return (
     <div className="App">
-      <input onChange={debouncedChangeHandler} ref={inputRef} />
+      <input onChange={debouncedChangeHandler} ref={inputRef} style={{margin:'20px', padding:'10px 20px'}}/>
       {result.map((item) => {
         return (
-          <div key={item.id}>
+          <div key={item.id} style={{margin:'20px'}}>
             <img src={item.url} widt="400" height="400" />
           </div>
         );
