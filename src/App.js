@@ -1,42 +1,36 @@
-import React, {useRef, useState,useEffect, useMemo} from "react";
-import debounce from 'lodash.debounce';
+import React, {useState, useCallback } from "react";
+import debounce from "lodash.debounce";
 
-function App(props) {
+function App() {
   const [result, setResult] = useState([]);
-  const inputRef = useRef(null);
 
-  const requestFunc = async () => {
+  const requestFunc = async (value) => {
     try {
       const data = await fetch(
-        `https://api.thecatapi.com/v1/images/search?breed_ids=${inputRef.current.value}`
+        `https://api.thecatapi.com/v1/images/search?breed_ids=${value}`
       );
-
       let response = await data.json();
-
       setResult(response);
     } catch (err) {
       console.log(err);
     }
-
   };
- 
-  const value= inputRef.current.value;
 
-    const debouncedChangeHandler =  useMemo(
-      () => debounce(requestFunc(value), 300)
-    , []);
-  
-    useEffect(() => {
-      return () => {
-        debouncedChangeHandler.cancel();
-      }
-    }, []);
+  const changeHandler = (event) => {
+    requestFunc(event.target.value);
+  };
+
+  const debouncedChangeHandler = useCallback(debounce(changeHandler, 300), []);
+
   return (
     <div className="App">
-      <input onChange={debouncedChangeHandler} ref={inputRef} style={{margin:'20px', padding:'10px 20px'}}/>
+      <input
+        onChange={debouncedChangeHandler}
+        style={{ margin: "20px", padding: "10px 20px" }}
+      />
       {result.map((item) => {
         return (
-          <div key={item.id} style={{margin:'20px'}}>
+          <div key={item.id} style={{ margin: "20px" }}>
             <img src={item.url} widt="400" height="400" />
           </div>
         );
@@ -44,7 +38,5 @@ function App(props) {
     </div>
   );
 }
-
-// Log to console
 
 export default App;
