@@ -1,15 +1,6 @@
-import React, { useState } from "react";
-import { useRef } from "react";
+import React, {useRef, useState} from "react";
+import debounce from 'lodash.debounce';
 
-function debounce(callback, ms = 500) {
-  let timerId = null;
-  return function () {
-    if (timerId) {
-      clearTimeout(timerId);
-    }
-    timerId = setTimeout(callback, ms);
-  };
-}
 function App(props) {
   const [result, setResult] = useState([]);
   const inputRef = useRef(null);
@@ -28,18 +19,16 @@ function App(props) {
     }
 
   };
-  const handleChangeInput = () => {   
+ 
 
-    debounce (function () {
-   console.log('value' + inputRef.current.value)
-     requestFunc(test );
-    })}
-
-
+    const debouncedChangeHandler = ()=>{
+      const value= inputRef.current.value;
+      debounce(requestFunc(value), 500)
+    };
     
   return (
     <div className="App">
-      <input onChange={handleChangeInput} ref={inputRef} />
+      <input onChange={debouncedChangeHandler} ref={inputRef} />
       {result.map((item) => {
         return (
           <div key={item.id}>
