@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useRef, useState,useEffect, useMemo} from "react";
 import debounce from 'lodash.debounce';
 
 function App(props) {
@@ -20,12 +20,17 @@ function App(props) {
 
   };
  
+  const value= inputRef.current.value;
 
-    const debouncedChangeHandler = ()=>{
-      const value= inputRef.current.value;
-      debounce(requestFunc(value), 1000)
-    };
-    
+    const debouncedChangeHandler =  useMemo(
+      () => debounce(requestFunc(value), 300)
+    , []);
+  
+    useEffect(() => {
+      return () => {
+        debouncedChangeHandler.cancel();
+      }
+    }, []);
   return (
     <div className="App">
       <input onChange={debouncedChangeHandler} ref={inputRef} style={{margin:'20px', padding:'10px 20px'}}/>
